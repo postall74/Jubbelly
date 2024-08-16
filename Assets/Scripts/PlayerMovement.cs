@@ -7,9 +7,8 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region Components
-    private PlayerControllers _playerControllers;
+    private Player _player;
     private CharacterController _characterController;
-    private Animator _animator;
     #endregion
 
     #region Fields
@@ -32,21 +31,13 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region Unity Methods
-    private void Awake()
-    {
-        AssignInputEvents();
-    }
-
-    private void OnEnable()
-    {
-        _playerControllers.Enable();
-    }
-
     private void Start()
     {
+        _player = GetComponent<Player>();
         _characterController = GetComponent<CharacterController>();
-        _animator = GetComponentInChildren<Animator>();
         _moveSpeed = _walkSpeed;
+
+        AssignInputEvents();
     }
 
     private void Update()
@@ -55,33 +46,24 @@ public class PlayerMovement : MonoBehaviour
         AimTowardsMouse();
         AnimatorControllers();
     }
-
-    private void OnDisable()
-    {
-        _playerControllers.Disable();
-    }
     #endregion
 
     #region Methods
     private void AssignInputEvents()
     {
-        _playerControllers = new PlayerControllers();
+        _player.PlayerControllers.Character.Movement.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
+        _player.PlayerControllers.Character.Movement.canceled += ctx => _moveInput = Vector2.zero;
 
-        _playerControllers.Character.Movement.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
-        _playerControllers.Character.Movement.canceled += ctx => _moveInput = Vector2.zero;
+        _player.PlayerControllers.Character.Aim.performed += ctx => _aimInput = ctx.ReadValue<Vector2>();
+        _player.PlayerControllers.Character.Aim.canceled += ctx => _aimInput = Vector2.zero;
 
-        _playerControllers.Character.Aim.performed += ctx => _aimInput = ctx.ReadValue<Vector2>();
-        _playerControllers.Character.Aim.canceled += ctx => _aimInput = Vector2.zero;
-
-        _playerControllers.Character.Fire.performed += ctx => Shoot();
-
-        _playerControllers.Character.Run.performed += ctx =>
+        _player.PlayerControllers.Character.Run.performed += ctx =>
         {
             _moveSpeed = _runSpeed;
             _isRunning = true;
         };
 
-        _playerControllers.Character.Run.canceled += ctx =>
+        _player.PlayerControllers.Character.Run.canceled += ctx =>
         {
             _moveSpeed = _walkSpeed;
             _isRunning = false;
@@ -93,17 +75,13 @@ public class PlayerMovement : MonoBehaviour
         float xVelocity = Vector3.Dot(_moveDirection.normalized, transform.right);
         float zVelocity = Vector3.Dot(_moveDirection.normalized, transform.forward);
 
-        _animator.SetFloat("xVelocity", xVelocity, .1f, Time.deltaTime);
-        _animator.SetFloat("zVelocity", zVelocity, .1f, Time.deltaTime);
+        _player.Animator.SetFloat("xVelocity", xVelocity, .1f, Time.deltaTime);
+        _player.Animator.SetFloat("zVelocity", zVelocity, .1f, Time.deltaTime);
 
         bool isRunAnimation = _isRunning && _moveDirection.magnitude > 0;
-        _animator.SetBool("isRunning", isRunAnimation);
+        _player.Animator.SetBool("isRunning", isRunAnimation);
     }
 
-    private void Shoot()
-    {
-        _animator.SetTrigger("Fire");
-    }
 
     private void AimTowardsMouse()
     {
