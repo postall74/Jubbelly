@@ -19,7 +19,7 @@ public class WeaponVisualController : MonoBehaviour
     #region Unity Methods
     private void Start()
     {
-        SwitchOfGuns();
+        SwitchOffGuns();
     }
 
     private void Update()
@@ -49,7 +49,7 @@ public class WeaponVisualController : MonoBehaviour
     #endregion
 
     #region Methods
-    private void SwitchOfGuns()
+    private void SwitchOffGuns()
     {
         foreach (Transform gun in _gunTransforms)
         {
@@ -59,7 +59,7 @@ public class WeaponVisualController : MonoBehaviour
 
     private void SwitchOn(Transform gunTransform)
     {
-        SwitchOfGuns();
+        SwitchOffGuns();
         gunTransform.gameObject.SetActive(true);
     }
     #endregion
