@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     #region Constants
+    private const float Height = 1.0f;
     #endregion
 
     #region Components
@@ -95,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
 
             transform.forward = _lookDirection;
 
-            _aim.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+            _aim.position = new Vector3(hit.point.x, transform.position.y + Height, hit.point.z);
         }
     }
 
