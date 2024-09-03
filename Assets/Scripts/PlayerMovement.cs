@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     #region Constants
-    private const float Height = 1.0f;
     #endregion
 
     #region Components
@@ -16,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Aim info")]
     [SerializeField] private LayerMask _aimLayer;
     [SerializeField] private Transform _aim;
+    [SerializeField] private float _aimPointHeight;
     private Vector3 _lookDirection;
     [Header("Movement info")]
     [SerializeField] private float _walkSpeed;
@@ -96,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
 
             transform.forward = _lookDirection;
 
-            _aim.position = new Vector3(hit.point.x, transform.position.y + Height, hit.point.z);
+            _aim.position = new Vector3(hit.point.x, transform.position.y + _aimPointHeight, hit.point.z);
         }
     }
 
